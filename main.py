@@ -1,3 +1,4 @@
+import torch
 import argparse
 
 from trainer import Trainer

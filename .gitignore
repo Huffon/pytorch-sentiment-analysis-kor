@@ -2,6 +2,6 @@ venv
 .idea
 
 __pycache__/
-models/__pycache__
+models/__pycache__/
 
 *.pt
