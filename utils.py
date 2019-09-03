@@ -15,7 +15,6 @@ LABEL = td.LabelField(dtype=torch.float)
 
 def load_dataset(seed):
     print(f'Load NSMC data and convert it to Dataframe . . .')
-    torch.manual_seed(seed)
 
     data_dir = Path().cwd() / 'data'
     train_txt = os.path.join(data_dir, 'train.txt')
@@ -36,9 +35,11 @@ def convert_to_dataset(data):
     # remove id column
     data = data.iloc[:, 1:]
 
+    # convert integer label to string label
     data.loc[data['label'] == 0, ['label']] = 'neg'
     data.loc[data['label'] == 1, ['label']] = 'pos'
 
+    # drop some missing values
     missing_rows = []
     for idx, row in data.iterrows():
         if type(row.document) != str:
@@ -46,15 +47,17 @@ def convert_to_dataset(data):
 
     data = data.drop(missing_rows)
 
+    # convert each row to torchtext example
     list_of_examples = [Example.fromlist(row.tolist(),
                                          fields=[('text', TEXT), ('label', LABEL)]) for _, row in data.iterrows()]
 
+    # make torchtext dataset using torchtext example list
     dataset = Dataset(examples=list_of_examples, fields=[('text', TEXT), ('label', LABEL)])
 
     return dataset
 
 
-def build_vocab(vocab_size, data):
+def build_vocab(data, vocab_size):
     print(f'\nBuild vocab . . .')
     TEXT.build_vocab(data, max_size=vocab_size)
     LABEL.build_vocab(data)
@@ -66,17 +69,21 @@ def build_vocab(vocab_size, data):
 
 
 def make_iter(train_data, valid_data, test_data, batch_size, vocab_size, device='cpu'):
+    # convert pandas Dataframe to torchtext dataset
     train_data = convert_to_dataset(train_data)
     valid_data = convert_to_dataset(valid_data)
     test_data = convert_to_dataset(test_data)
 
-    build_vocab(vocab_size, train_data)
+    # build vocab using train dataset
+    build_vocab(train_data, vocab_size)
 
+    # make iterator using train, validation and test
     print(f'\nMake Iterators . . .')
     train_iter, valid_iter, test_iter = td.BucketIterator.splits(
         (train_data, valid_data, test_data),
         sort_key=lambda x: len(x.text),
         # the BucketIterator needs to be told what function it should use to group the data.
+        # In our case, we sort dataset using text of example
         sort_within_batch=False,
         batch_size=batch_size,
         device=device)

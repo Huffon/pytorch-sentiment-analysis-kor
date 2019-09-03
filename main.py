@@ -5,9 +5,11 @@ from utils import load_dataset, make_iter
 
 
 def main(config, local):
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
     train_data, valid_data, test_data = load_dataset(config.random_seed)
     train_iter, valid_iter, test_iter = make_iter(train_data, valid_data, test_data, config.batch_size,
-                                                  config.vocab_size)
+                                                  config.vocab_size, device)
 
     trainer = Trainer(config, train_iter, valid_iter, test_iter)
 
@@ -36,10 +38,10 @@ if __name__ == '__main__':
     parser.add_argument('--n_layer', type=int, default=2)
     parser.add_argument('--dropout', type=float, default=0.2)
 
+    # Additional options
     parser.add_argument('--mode', type=str, default='train')
-    parser.add_argument('--save_model', type=str, default='mdoel.pt')
+    parser.add_argument('--save_model', type=str, default='model.pt')
 
     config = parser.parse_args()
-    # config.cuda = not config.no_cuda and torch.cuda.is_available()
 
     main(config, local=locals())
