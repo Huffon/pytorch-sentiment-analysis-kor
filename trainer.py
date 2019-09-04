@@ -14,11 +14,13 @@ class Trainer:
         self.config = config
         self.pad_idx = pad_idx
 
+        # Train mode
         if self.config.mode == 'train':
             self.train_iter = train_iter
             self.valid_iter = valid_iter
 
-        if self.config.mode == 'test':
+        # Test mode
+        else:
             self.test_iter = test_iter
 
         model_type = {

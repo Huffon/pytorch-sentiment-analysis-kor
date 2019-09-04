@@ -5,6 +5,9 @@ Base codes are based on this great [sentiment-analysis tutorial](https://github.
 
 In this project, I specially used **Korean corpus** [NSMC](https://github.com/e9t/nsmc) (Naver Sentiment Movie Corpus) to apply torchtext into Korean dataset.
 
+And I also used [soynlp](https://github.com/lovit/soynlp) library which is used to train and tokenize Korean sentence. 
+It is really nice and easy to use, you should try :)
+
 <br/>
 
 ### Overview
@@ -35,27 +38,28 @@ torchtext==0.4.0
 <br/>
 
 ### Usage
-- Before training, you should train tokenizer and build vocabulary using following code. 
-- By running this code, you will get tokenizer.pickle, text.pickle and label.pickle which are used to train, test model and predict user input sentence
+- Before training, you should train soynlp tokenizer and build vocabulary using following code. 
+- By running this code, you will get **tokenizer.pickle**, **text.pickle** and **label.pickle** which are used to train, 
+test model and predict user's input sentence
 
 ```
 python build_pickle.py
 ```
 
 
-- For training, you run main.py with train mode (default mode)
+- For training, run **main.py** with train mode (default option)
 
 ```
 python main.py --model MODEL_NAME
 ```
 
-- For testing, you run train.py with test mode
+- For testing, run **main.py** with test mode
 
 ```
 python main.py --model MODEL_NAME --mode test 
 ```
 
-- For predicting, you run predict.py with the input sentence that you want to try. 
+- For predicting, run **predict.py** with your input sentence. 
 - *Don't forget to wrap your input sentence with double quotation mark !*
 
 ```

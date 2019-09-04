@@ -17,9 +17,9 @@ def load_dataset(mode, seed):
     """
     Load train and test dataset and split train dataset to make validation dataset.
     And finally convert train, validation and test dataset to pandas DataFrame.
-    Args:
-        mode: (string)
+        mode: (string) configuration mode used to which dataset to load
         seed: (integer) used to equally split train dataset when 'train_test_split' is called
+    Args:
 
     Returns:
         (DataFrame) train, valid, test dataset converted to pandas DataFrame
@@ -51,9 +51,9 @@ def convert_to_dataset(data, text, label):
     """
     Pre-process input DataFrame and convert pandas DataFrame to torchtext Dataset.
     Args:
-        data: (DataFrame)
-        text:
-        label:
+        data: (DataFrame) pandas DataFrame to be converted into torchtext Dataset
+        text: torchtext Field containing sentence information
+        label: torchtext Field containing label information
 
     Returns:
         (Dataset) torchtext Dataset
@@ -65,7 +65,7 @@ def convert_to_dataset(data, text, label):
     data.loc[data['label'] == 0, ['label']] = 'neg'
     data.loc[data['label'] == 1, ['label']] = 'pos'
 
-    # drop some missing values
+    # drop missing values from DataFrame
     missing_rows = []
     for idx, row in data.iterrows():
         if type(row.document) != str:
@@ -76,7 +76,7 @@ def convert_to_dataset(data, text, label):
     list_of_examples = [Example.fromlist(row.tolist(),
                                          fields=[('text', text), ('label', label)]) for _, row in data.iterrows()]
 
-    # make torchtext 'Dataset' using torchtext 'Example' list
+    # construct torchtext 'Dataset' using torchtext 'Example' list
     dataset = Dataset(examples=list_of_examples, fields=[('text', text), ('label', label)])
 
     return dataset
@@ -87,7 +87,7 @@ def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None
     Convert pandas DataFrame to torchtext Dataset and make iterator used to train and test
     Args:
         batch_size: (integer) batch size used to make iterators
-        mode: (string)
+        mode: (string) configuration mode used to which iterator to make
         train_data: (DataFrame) pandas DataFrame used to make train iterator
         valid_data: (DataFrame) pandas DataFrame used to make validation iterator
         test_data: (DataFrame) pandas DataFrame used to make test iterator
@@ -95,6 +95,7 @@ def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None
     Returns:
         (BucketIterator) train, valid, test iterator
     """
+    # load text and label field made by build_pickles.py
     file_text = open('pickles/text.pickle', 'rb')
     text = pickle.load(file_text)
     pad_idx = text.vocab.stoi[text.pad_token]
@@ -138,6 +139,15 @@ def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None
 
 
 def binary_accuracy(predictions, targets):
+    """
+    Calculates binary accuracy
+    Args:
+        predictions: predictions made by defined model
+        targets: ground-truths
+
+    Returns:
+        (float) accuracy model made
+    """
     # round predictions to the closest integer (0 or 1)
     rounded_preds = torch.round(torch.sigmoid(predictions))
 

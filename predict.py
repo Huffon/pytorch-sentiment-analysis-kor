@@ -9,15 +9,15 @@ from models.bidirectional_lstm import BidirectionalLSTM
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-def predict(config, local):
+def predict(config):
     # load tokenizer and torchtext Field
     pickle_tokenizer = open('pickles/tokenizer.pickle', 'rb')
     cohesion_scores = pickle.load(pickle_tokenizer)
     tokenizer = LTokenizer(scores=cohesion_scores)
 
     pickle_vocab = open('pickles/text.pickle', 'rb')
-    TEXT = pickle.load(pickle_vocab)
-    pad_idx = TEXT.vocab.stoi[TEXT.pad_token]
+    text = pickle.load(pickle_vocab)
+    pad_idx = text.vocab.stoi[text.pad_token]
 
     model_type = {
         'vanilla_rnn': RNN(config, pad_idx),
@@ -31,7 +31,7 @@ def predict(config, local):
 
     # convert input into tensor and forward it through selected model
     tokenized = tokenizer.tokenize(config.input)
-    indexed = [TEXT.vocab.stoi[token] for token in tokenized]
+    indexed = [text.vocab.stoi[token] for token in tokenized]
     length = [len(indexed)]
 
     tensor = torch.LongTensor(indexed).to(device)    # [input length]
@@ -68,4 +68,4 @@ if __name__ == '__main__':
 
     config = parser.parse_args()
 
-    predict(config, local=locals())
+    predict(config)
