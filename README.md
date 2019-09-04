@@ -35,7 +35,8 @@ torchtext==0.4.0
 <br/>
 
 ### Usage
-- Before training, you should train tokenizer and build vocabulary using following code. By running this code, you will get tokenizer.pickle, text.pickle and label.pickle which are used to train, test model and predict user input sentence
+- Before training, you should train tokenizer and build vocabulary using following code. 
+- By running this code, you will get tokenizer.pickle, text.pickle and label.pickle which are used to train, test model and predict user input sentence
 
 ```
 python build_pickle.py
@@ -45,13 +46,13 @@ python build_pickle.py
 - For training, you run main.py with train mode (default mode)
 
 ```
-python main.py
+python main.py --model MODEL_NAME
 ```
 
 - For testing, you run train.py with test mode
 
 ```
-python main.py --mode test 
+python main.py --model MODEL_NAME --mode test 
 ```
 
 - For predicting, you run predict.py with the input sentence that you want to try. 

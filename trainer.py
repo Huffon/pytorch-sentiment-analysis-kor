@@ -3,10 +3,9 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from utils import epoch_time
+from utils import epoch_time, binary_accuracy
 from models.vanilla_rnn import RNN
 from models.bidirectional_lstm import BidirectionalLSTM
-from evaluation import binary_accuracy
 
 
 class Trainer:
