@@ -5,7 +5,7 @@ Base codes are based on this great [sentiment-analysis tutorial](https://github.
 
 In this project, I specially used **Korean corpus** [NSMC](https://github.com/e9t/nsmc) (Naver Sentiment Movie Corpus) to apply torchtext into Korean dataset.
 
-And I also used [soynlp](https://github.com/lovit/soynlp) library which is used to train and tokenize Korean sentence. 
+And I also used [**soynlp**](https://github.com/lovit/soynlp) library which is used to tokenize Korean sentence. 
 It is really nice and easy to use, you should try :)
 
 <br/>
@@ -37,8 +37,17 @@ torchtext==0.4.0
 
 <br/>
 
+### Models
+
+- In this repository, following models are implemented to analyze sentiment. Other famous models will be updated.
+    1. [Vanilla RNN](https://github.com/Huffon/pytorch-sentiment-analysis-kor/blob/master/models/vanilla_rnn.py) 
+    2. [Bidirectional LSTM](https://github.com/Huffon/pytorch-sentiment-analysis-kor/blob/master/models/bidirectional_lstm.py)
+    3. [CNN (for Sentence Classification)](https://github.com/Huffon/pytorch-sentiment-analysis-kor/blob/master/models/cnn.py)
+
+<br/>
+
 ### Usage
-- Before training, you should train soynlp tokenizer and build vocabulary using following code. 
+- Before training the model, you should train soynlp tokenizer and build vocabulary using following code. 
 - By running this code, you will get **tokenizer.pickle**, **text.pickle** and **label.pickle** which are used to train, 
 test model and predict user's input sentence
 
