@@ -9,8 +9,27 @@ from sklearn.model_selection import train_test_split
 from torchtext import data as ttd
 from torchtext.data import Example
 from torchtext.data import Dataset
+from soynlp.tokenizer import LTokenizer
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+
+def preprocess_data(data):
+    # remove id column since it is not used to make torchtext Dataset
+    data = data.iloc[:, 1:]
+
+    # convert integer label (0 / 1) to string label ('neg' / 'pos')
+    data.loc[data['label'] == 0, ['label']] = 'neg'
+    data.loc[data['label'] == 1, ['label']] = 'pos'
+
+    # drop missing values from DataFrame
+    missing_rows = []
+    for idx, row in data.iterrows():
+        if type(row.document) != str:
+            missing_rows.append(idx)
+    data = data.drop(missing_rows)
+
+    return data
 
 
 def load_dataset(mode, seed):
@@ -33,6 +52,9 @@ def load_dataset(mode, seed):
         train_data = pd.read_csv(train_txt, sep='\t')
         train_data, valid_data = train_test_split(train_data, test_size=0.3, random_state=seed)
 
+        train_data = preprocess_data(train_data)
+        valid_data = preprocess_data(valid_data)
+
         print(f'Number of training examples: {len(train_data)}')
         print(f'Number of validation examples: {len(valid_data)}')
 
@@ -41,6 +63,8 @@ def load_dataset(mode, seed):
     else:
         test_txt = os.path.join(data_dir, 'test.txt')
         test_data = pd.read_csv(test_txt, sep='\t')
+
+        test_data = preprocess_data(test_data)
 
         print(f'Number of testing examples: {len(test_data)}')
 
@@ -58,20 +82,6 @@ def convert_to_dataset(data, text, label):
     Returns:
         (Dataset) torchtext Dataset
     """
-    # remove id column since it is not used to make torchtext Dataset
-    data = data.iloc[:, 1:]
-
-    # convert integer label (0 / 1) to string label ('neg' / 'pos')
-    data.loc[data['label'] == 0, ['label']] = 'neg'
-    data.loc[data['label'] == 1, ['label']] = 'pos'
-
-    # drop missing values from DataFrame
-    missing_rows = []
-    for idx, row in data.iterrows():
-        if type(row.document) != str:
-            missing_rows.append(idx)
-    data = data.drop(missing_rows)
-
     # convert each row of DataFrame to torchtext 'Example' which contains text and label attributes
     list_of_examples = [Example.fromlist(row.tolist(),
                                          fields=[('text', text), ('label', label)]) for _, row in data.iterrows()]
@@ -136,6 +146,20 @@ def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None
             device=device)
 
         return test_iter, pad_idx
+
+
+def pad_sentence(dataframe, min_len):
+    pickle_tokenizer = open('pickles/tokenizer.pickle', 'rb')
+    cohesion_scores = pickle.load(pickle_tokenizer)
+    tokenizer = LTokenizer(scores=cohesion_scores)
+
+    for i, row in dataframe.iterrows():
+        tokenized = tokenizer.tokenize(row.document)
+        if len(tokenized) < 5:
+            tokenized += ['<pad>'] * (min_len - len(tokenized))
+            dataframe.at[i, 'document'] = tokenized
+
+    return dataframe
 
 
 def binary_accuracy(predictions, targets):

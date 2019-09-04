@@ -1,12 +1,16 @@
 import argparse
 
 from trainer import Trainer
-from utils import load_dataset, make_iter
+from utils import load_dataset, make_iter, pad_sentence
 
 
-def main(config, local):
+def main(config):
     if config.mode == 'train':
         train_data, valid_data = load_dataset(config.mode, config.random_seed)
+        # if use
+        if config.model == 'cnn':
+            train_data = pad_sentence(train_data, config.filter_sizes[-1])
+            valid_data = pad_sentence(valid_data, config.filter_sizes[-1])
         train_iter, valid_iter, pad_idx = make_iter(config.batch_size, config.mode, train_data=train_data,
                                                     valid_data=valid_data)
 
@@ -14,8 +18,10 @@ def main(config, local):
 
         trainer.train()
 
-    elif config.mode == 'test':
+    else:
         test_data = load_dataset(config.mode, config.random_seed)
+        if config.model == 'cnn':
+            test_data = pad_sentence(test_data, config.filter_sizes[-1])
         test_iter, pad_idx = make_iter(config.batch_size, config.mode, test_data=test_data)
         trainer = Trainer(config, pad_idx, test_iter=test_iter)
 
@@ -40,12 +46,16 @@ if __name__ == '__main__':
     parser.add_argument('--dropout', type=float, default=0.5)
     parser.add_argument('--bidirectional', type=bool, default=True)
 
+    # Options for CNN model
+    parser.add_argument('--n_filters', type=int, default=100)
+    parser.add_argument('--filter_sizes', type=list, default=[2, 3, 4])
+
     # Additional options
-    parser.add_argument('--model', type=str, default='vanilla_rnn', choices=['vanilla_rnn', 'bidirectional_lstm'])
+    parser.add_argument('--model', type=str, default='vanilla_rnn', choices=['vanilla_rnn', 'bidirectional_lstm', 'cnn'])
     parser.add_argument('--optim', type=str, default='Adam', choices=['SGD', 'Adam'])
     parser.add_argument('--mode', type=str, default='train')
     parser.add_argument('--save_model', type=str, default='model.pt')
 
     config = parser.parse_args()
 
-    main(config, local=locals())
+    main(config)

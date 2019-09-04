@@ -6,6 +6,7 @@ import torch.optim as optim
 from utils import epoch_time, binary_accuracy
 from models.vanilla_rnn import RNN
 from models.bidirectional_lstm import BidirectionalLSTM
+from models.cnn import CNN
 
 
 class Trainer:
@@ -26,6 +27,7 @@ class Trainer:
         model_type = {
             'vanilla_rnn': RNN(self.config, self.pad_idx),
             'bidirectional_lstm': BidirectionalLSTM(self.config, self.pad_idx),
+            'cnn': CNN(self.config),
         }
 
         self.model = model_type[self.config.model]
@@ -64,7 +66,6 @@ class Trainer:
                 # if Field has include_lengths=False, batch.text is only padded numericalized tensor
                 # if Field has include_lengths=True, batch.text is tuple(padded numericalized tensor, sentence length)
                 input, input_lengths = batch.text
-
                 predictions = self.model(input, input_lengths).squeeze(1)
                 # predictions = [batch size, 1]. after squeeze(1) = [batch size])
 
