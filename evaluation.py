@@ -11,6 +11,7 @@ def binary_accuracy(predictions, targets):
     # rounded_preds = [ 1   0   0   1   1   1   0   1   1   1]
     # targets       = [ 1   0   1   1   1   1   0   1   1   0]
     # correct       = [1.0 1.0 0.0 1.0 1.0 1.0 1.0 1.0 1.0 0.0]
-    # acc           = 8.0 / 10 => 0.8
+
     acc = correct.sum() / len(correct)
+    # acc           = 8.0 / 10 => 0.8
     return acc

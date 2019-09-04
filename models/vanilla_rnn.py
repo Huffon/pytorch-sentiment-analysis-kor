@@ -3,14 +3,14 @@ import torch.nn as nn
 
 
 class RNN(nn.Module):
-    def __init__(self, config):
+    def __init__(self, config, pad_idx):
         super(RNN, self).__init__()
         # add two to vocab_size for <UNK> and <PAD> tokens
         self.embedding = nn.Embedding(config.vocab_size + 2, config.embed_dim)
         self.rnn = nn.RNN(config.embed_dim, config.hidden_dim)
         self.fc = nn.Linear(config.hidden_dim, config.output_dim)
 
-    def forward(self, input):
+    def forward(self, input, input_lengths):
         # input = [input length, batch size]
 
         embedded = self.embedding(input)
@@ -25,9 +25,10 @@ class RNN(nn.Module):
         # hidden = [1, batch size, hidden dim]
         # : the final hidden state
 
-        # check if 'hidden' is the last hidden state of 'output'
+        # check whether 'hidden' is the last hidden state of 'output'
         assert torch.equal(output[-1, :, :], hidden.squeeze(0))
 
+        # after squeeze(0), hidden becomes [batch size, hidden dim]
         return self.fc(hidden.squeeze(0))
 
     def count_parameters(self):

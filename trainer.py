@@ -1,37 +1,51 @@
 import time
-import logging
-
 import torch
 import torch.nn as nn
 import torch.optim as optim
 
 from utils import epoch_time
 from models.vanilla_rnn import RNN
+from models.bidirectional_lstm import BidirectionalLSTM
 from evaluation import binary_accuracy
-
-logger = logging.getLogger(__name__)
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 class Trainer:
-    def __init__(self, config, train_iter, valid_iter, test_iter):
+    def __init__(self, config, pad_idx, train_iter=None, valid_iter=None, test_iter=None):
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.config = config
+        self.pad_idx = pad_idx
 
-        self.train_iter = train_iter
-        self.valid_iter = valid_iter
-        self.test_iter = test_iter
+        if self.config.mode == 'train':
+            self.train_iter = train_iter
+            self.valid_iter = valid_iter
 
-        self.model = RNN(self.config)
-        self.model.to(device)
+        if self.config.mode == 'test':
+            self.test_iter = test_iter
 
-        self.optimizer = optim.SGD(self.model.parameters(), lr=self.config.lr)
+        model_type = {
+            'vanilla_rnn': RNN(self.config, self.pad_idx),
+            'bidirectional_lstm': BidirectionalLSTM(self.config, self.pad_idx),
+        }
+
+        self.model = model_type[self.config.model]
+        self.model.to(self.device)
+
+        # SGD updates all parameters with the same learning rate
+        # Adam adapts learning rate for each parameter
+        optim_type = {
+            'SGD': optim.SGD(self.model.parameters(), lr=self.config.lr),
+            'Adam': optim.Adam(self.model.parameters()),
+        }
+
+        self.optimizer = optim_type[self.config.optim]
 
         # BCEWithLogitsLoss carries out both the sigmoid and the binary cross entropy steps.
         self.criterion = nn.BCEWithLogitsLoss()
-        self.criterion.to(device)
+        self.criterion.to(self.device)
 
     def train(self):
         print(f'The model has {self.model.count_parameters():,} trainable parameters')
+
         best_valid_loss = float('inf')
 
         self.model.train()
@@ -46,8 +60,12 @@ class Trainer:
                 # For each batch, first zero the gradients
                 self.optimizer.zero_grad()
 
-                # predictions = [batch size, 1] -> [batch size])
-                predictions = self.model(batch.text).squeeze(1)
+                # if Field has include_lengths=False, batch.text is only padded numericalized tensor
+                # if Field has include_lengths=True, batch.text is tuple(padded numericalized tensor, sentence length)
+                input, input_lengths = batch.text
+
+                predictions = self.model(input, input_lengths).squeeze(1)
+                # predictions = [batch size, 1]. after squeeze(1) = [batch size])
 
                 loss = self.criterion(predictions, batch.label)
                 acc = binary_accuracy(predictions, batch.label)
@@ -55,8 +73,7 @@ class Trainer:
                 loss.backward()
                 self.optimizer.step()
 
-                # .item() method is used to extract a scalar
-                # from a tensor which only contains a single value.
+                # 'item' method is used to extract a scalar from a tensor which only contains a single value.
                 epoch_loss += loss.item()
                 epoch_acc += acc.item()
 
@@ -71,7 +88,7 @@ class Trainer:
 
             if valid_loss < best_valid_loss:
                 best_valid_loss = valid_loss
-                torch.save(self.model.state_dict(), 'model.pt')
+                torch.save(self.model.state_dict(), self.config.save_model)
 
             print(f'Epoch: {epoch+1:02} | Epoch Time: {epoch_mins}m {epoch_secs}s')
             print(f'\tTrain Loss: {train_loss:.3f} | Train Acc: {train_acc*100:.2f}%')
@@ -85,7 +102,8 @@ class Trainer:
 
         with torch.no_grad():
             for batch in self.valid_iter:
-                predictions = self.model(batch.text).squeeze(1)
+                input, input_lengths = batch.text
+                predictions = self.model(input, input_lengths).squeeze(1)
 
                 loss = self.criterion(predictions, batch.label)
                 acc = binary_accuracy(predictions, batch.label)
@@ -104,7 +122,8 @@ class Trainer:
 
         with torch.no_grad():
             for batch in self.test_iter:
-                predictions = self.model(batch.text).squeeze(1)
+                input, input_lengths = batch.text
+                predictions = self.model(input, input_lengths).squeeze(1)
 
                 loss = self.criterion(predictions, batch.label)
                 acc = binary_accuracy(predictions, batch.label)
