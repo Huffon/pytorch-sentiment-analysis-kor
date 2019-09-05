@@ -7,7 +7,7 @@ from utils import load_dataset, make_iter, pad_sentence
 def main(config):
     if config.mode == 'train':
         train_data, valid_data = load_dataset(config.mode, config.random_seed)
-        # if use
+        # if use CNN model, pad sentences to let all the batch inputs has minimum length
         if config.model == 'cnn':
             train_data = pad_sentence(train_data, config.filter_sizes[-1])
             valid_data = pad_sentence(valid_data, config.filter_sizes[-1])
