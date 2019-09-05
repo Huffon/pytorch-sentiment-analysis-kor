@@ -33,6 +33,8 @@ class CNN(nn.Module):
         embedded = self.embedding(input)
         # embedded = [batch size, input length, embed dim]
 
+        # unsqueeze additional dimension which takes in_channel as an input
+        # image processing needs a 3 in-channels, but text processing needs a one in-channel
         embedded = embedded.unsqueeze(1)
         # embedded = [batch size, 1, input length, embed dim]
 
