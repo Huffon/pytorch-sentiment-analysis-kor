@@ -52,6 +52,7 @@ class Trainer:
         best_valid_loss = float('inf')
 
         self.model.train()
+        print(self.model)
 
         for epoch in range(self.config.num_epoch):
             epoch_loss = 0

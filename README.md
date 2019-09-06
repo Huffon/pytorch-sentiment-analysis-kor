@@ -18,7 +18,7 @@ It is really nice and easy to use, you should try :)
 
 ```
 Example:
-{'text': '[액션', '이', '없는', '데도', '재미', '있는', '몇안되는', '영화'], 
+{'text': '['액션', '이', '없는', '데도', '재미', '있는', '몇안되는', '영화'], 
  'label': 'pos'}
 ```
 
@@ -26,6 +26,10 @@ Example:
 
 
 ### Requirements
+
+- Following libraries are fundamental to this repo. Since I used conda environment `requirements.txt` has much more dependent libraries. 
+- Therefore if you encounters any dependency problem, just use this command `pip install -r requirements.txt`
+
 ```
 numpy==1.16.4
 pandas==0.25.1
