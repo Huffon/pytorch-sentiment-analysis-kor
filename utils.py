@@ -15,14 +15,22 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
 def preprocess_data(data):
-    # remove id column since it is not used to make torchtext Dataset
+    """
+    Pre-process input DataFrame to have string label and not to have 'id' column
+    Args:
+        data: (DataFrame) input DataFrame which will be pre-processed
+
+    Returns:
+
+    """
+    # remove 'id' column since it is not used to build torchtext Dataset
     data = data.iloc[:, 1:]
 
     # convert integer label (0 / 1) to string label ('neg' / 'pos')
     data.loc[data['label'] == 0, ['label']] = 'neg'
     data.loc[data['label'] == 1, ['label']] = 'pos'
 
-    # drop missing values from DataFrame
+    # drop missing values from input DataFrame
     missing_rows = []
     for idx, row in data.iterrows():
         if type(row.document) != str:
@@ -82,7 +90,7 @@ def convert_to_dataset(data, text, label):
     Returns:
         (Dataset) torchtext Dataset
     """
-    # convert each row of DataFrame to torchtext 'Example' which contains text and label attributes
+    # convert each row of DataFrame to torchtext 'Example' which contains text and label Fields
     list_of_examples = [Example.fromlist(row.tolist(),
                                          fields=[('text', text), ('label', label)]) for _, row in data.iterrows()]
 
@@ -94,13 +102,13 @@ def convert_to_dataset(data, text, label):
 
 def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None):
     """
-    Convert pandas DataFrame to torchtext Dataset and make iterator used to train and test
+    Convert pandas DataFrame to torchtext Dataset and build iterator used to both train and test modess
     Args:
         batch_size: (integer) batch size used to make iterators
         mode: (string) configuration mode used to which iterator to make
-        train_data: (DataFrame) pandas DataFrame used to make train iterator
-        valid_data: (DataFrame) pandas DataFrame used to make validation iterator
-        test_data: (DataFrame) pandas DataFrame used to make test iterator
+        train_data: (DataFrame) pandas DataFrame used to build train iterator
+        valid_data: (DataFrame) pandas DataFrame used to build validation iterator
+        test_data: (DataFrame) pandas DataFrame used to build test iterator
 
     Returns:
         (BucketIterator) train, valid, test iterator
@@ -134,6 +142,8 @@ def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None
 
     else:
         test_data = convert_to_dataset(test_data, text, label)
+
+        # defines dummy list will be passed to the BucketIterator
         dummy = list()
 
         # make iterator using test dataset
@@ -149,6 +159,16 @@ def make_iter(batch_size, mode, train_data=None, valid_data=None, test_data=None
 
 
 def pad_sentence(dataframe, min_len):
+    """
+    to use CNN, all the inputs has the minimum length as same as the largest filter size
+    if the input is shorter than the largest CNN filter size, we should pad that input using pad_sentence method
+    Args:
+        dataframe: (DataFrame) dataframe used to train and validate the model
+        min_len: (integer) the largest CNN filter size used to set the minimum length of the model
+
+    Returns:
+
+    """
     pickle_tokenizer = open('pickles/tokenizer.pickle', 'rb')
     cohesion_scores = pickle.load(pickle_tokenizer)
     tokenizer = LTokenizer(scores=cohesion_scores)
@@ -164,7 +184,7 @@ def pad_sentence(dataframe, min_len):
 
 def binary_accuracy(predictions, targets):
     """
-    Calculates binary accuracy
+    Calculates binary accuracy for the model
     Args:
         predictions: predictions made by defined model
         targets: ground-truths

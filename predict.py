@@ -27,6 +27,7 @@ def predict_cnn(config):
 
     min_len = config.filter_sizes[-1]
 
+    # if user's input sentence is shorter than the largest filter size, add pad tokens to input sentence
     if len(tokenized) < min_len:
         tokenized += ['<pad>'] * (min_len - len(tokenized))
 

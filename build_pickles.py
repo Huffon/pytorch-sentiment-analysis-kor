@@ -15,11 +15,12 @@ from soynlp.word import WordExtractor
 
 def build_tokenizer():
     """
-    Train soynlp tokenizer which will be used to tokenize input sentence
+    Train soynlp tokenizer which will be used to tokenize Korean input sentence
     Returns:
 
     """
-    print(f'Now building soy-nlp tokenizer . . .')
+    print(f'Now building soynlp tokenizer . . .')
+
     data_dir = Path().cwd() / 'data'
     train_txt = os.path.join(data_dir, 'train.txt')
 
@@ -38,10 +39,9 @@ def build_tokenizer():
 
 def build_vocab(config):
     """
-    Build vocab used to convert input sentence into word indices using soynlp tokenizer
+    Build vocab used to convert Korean input sentence into word indices using soynlp tokenizer
     Args:
-        config: configuration containing various options
-        tokenizer: soynlp tokenizer used to struct torchtext Field object
+        config: configuration object containing various options
 
     Returns:
 
@@ -51,7 +51,7 @@ def build_vocab(config):
     cohesion_scores = pickle.load(pickle_tokenizer)
     tokenizer = LTokenizer(scores=cohesion_scores)
 
-    # To use packed padded sequences, tell the model how long the actual sequences are
+    # To use packed padded sequences, tell the model how long the actual sequences are by 'include_lengths=True'
     text = ttd.Field(tokenize=tokenizer.tokenize, include_lengths=True)
     label = ttd.LabelField(dtype=torch.float)
 
@@ -62,7 +62,7 @@ def build_vocab(config):
     train_data, valid_data = train_test_split(train_data, test_size=0.3, random_state=32)
     train_data = convert_to_dataset(train_data, text, label)
 
-    print(f'Build vocabulary using torchtext . . .')
+    print(f'Building vocabulary using torchtext . . .')
     text.build_vocab(train_data, max_size=config.vocab_size)
     label.build_vocab(train_data)
 
@@ -80,7 +80,7 @@ def build_vocab(config):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Build pickles used to use model')
+    parser = argparse.ArgumentParser(description='Pickle Builder')
 
     parser.add_argument('--vocab_size', type=int, default=25000)
 

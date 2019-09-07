@@ -16,7 +16,7 @@ class CNN(nn.Module):
                       kernel_size=(fs, self.config.embed_dim)) for fs in self.config.filter_sizes
         ])
 
-        # FC layer takes filer_sizes * n_filters size of concatenated vector as an input
+        # FC layer takes (filer_sizes * n_filters) size of concatenated vector as an input
         self.fc = nn.Linear(len(self.config.filter_sizes) * config.n_filters, self.config.output_dim)
 
         self.dropout = nn.Dropout(self.config.dropout)
@@ -24,7 +24,7 @@ class CNN(nn.Module):
     def forward(self, input, input_length):
         # input = [input length, batch size]
 
-        # in PyTorch, RNNs want the input with the batch dimension second, whereas CNNs want the batch dimension first.
+        # In PyTorch, RNNs want the input with the batch dimension second, whereas CNNs want the batch dimension first.
         # thus, the first thing we do to our input is permute it to make it the correct shape.
         input = input.permute(1, 0)
 
@@ -33,8 +33,8 @@ class CNN(nn.Module):
         embedded = self.embedding(input)
         # embedded = [batch size, input length, embed dim]
 
-        # add additional dimension which takes in_channel as an input
-        # image processing needs 3 in-channels (RGB), but text processing needs a one in-channel
+        # add additional dimension using unsqueeze(1) which takes in_channel as an input
+        # image processing needs 3 in-channels (RGB), but text processing needs only one in-channel
         embedded = embedded.unsqueeze(1)
         # embedded = [batch size, 1, input length, embed dim]
 
@@ -44,7 +44,7 @@ class CNN(nn.Module):
         pooled = [F.max_pool1d(conv, conv.shape[2]).squeeze(2) for conv in conved]
         # by squeezing additional dimension, pooled_n = [batch_size, n_filters]
 
-        # concatenate max pooled vectors into a single vector and pass it through a linear layer
+        # concatenate max pooled vectors into a single vector and pass it through a final FC layer
         cat = self.dropout(torch.cat(pooled, dim=1))
 
         return self.fc(cat)

@@ -7,10 +7,12 @@ from utils import load_dataset, make_iter, pad_sentence
 def main(config):
     if config.mode == 'train':
         train_data, valid_data = load_dataset(config.mode, config.random_seed)
-        # if use CNN model, pad sentences to let all the batch inputs has minimum length
+
+        # if use CNN model, pad sentences to let all the batch inputs has minimum length (filter_sizes[-1])
         if config.model == 'cnn':
             train_data = pad_sentence(train_data, config.filter_sizes[-1])
             valid_data = pad_sentence(valid_data, config.filter_sizes[-1])
+
         train_iter, valid_iter, pad_idx = make_iter(config.batch_size, config.mode, train_data=train_data,
                                                     valid_data=valid_data)
 

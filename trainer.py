@@ -33,7 +33,7 @@ class Trainer:
         self.model = model_type[self.config.model]
         self.model.to(self.device)
 
-        # SGD updates all parameters with the same learning rate
+        # SGD updates all parameters with the 'same' learning rate
         # Adam adapts learning rate for each parameter
         optim_type = {
             'SGD': optim.SGD(self.model.parameters(), lr=self.config.lr),

@@ -1,12 +1,12 @@
 ## Sentiment Analysis PyTorch implementations
-This repo contains various basic sequential models used to **analyze sentiment.**
+This repo contains various sequential models used to **classify sentiment of sentence.**
 
 Base codes are based on this great [**sentiment-analysis tutorial**](https://github.com/bentrevett/pytorch-sentiment-analysis).
 
 In this project, I specially used **Korean corpus** [**NSMC**](https://github.com/e9t/nsmc) (Naver Sentiment Movie Corpus) to apply torchtext into Korean dataset.
 
 And I also used [**soynlp**](https://github.com/lovit/soynlp) library which is used to tokenize Korean sentence. 
-It is really nice and easy to use, you should try :)
+It is really nice and easy to use, you should try if you handle Korean sentences :)
 
 <br/>
 
@@ -28,7 +28,8 @@ Example:
 ### Requirements
 
 - Following libraries are fundamental to this repo. Since I used conda environment `requirements.txt` has much more dependent libraries. 
-- Therefore if you encounters any dependency problem, just use this command `pip install -r requirements.txt`
+- If you encounters any dependency problem, just use following command 
+    - `pip install -r requirements.txt`
 
 ```
 numpy==1.16.4
@@ -43,7 +44,7 @@ torchtext==0.4.0
 
 ### Models
 
-- In this repository, following models are implemented to analyze sentiment. Other famous models will be updated.
+- In this repository, following models are implemented to analyze sentiment of input sentence. Other famous classification also models will be updated!
     1. [Vanilla RNN](https://github.com/Huffon/pytorch-sentiment-analysis-kor/blob/master/models/vanilla_rnn.py) 
     2. [Bidirectional LSTM](https://github.com/Huffon/pytorch-sentiment-analysis-kor/blob/master/models/bidirectional_lstm.py)
     3. [CNN (for Sentence Classification)](https://github.com/Huffon/pytorch-sentiment-analysis-kor/blob/master/models/cnn.py)
@@ -51,8 +52,8 @@ torchtext==0.4.0
 <br/>
 
 ### Usage
-- Before training the model, you should train soynlp tokenizer and build vocabulary using following code. 
-- By running this code, you will get `tokenizer.pickle`, `text.pickle` and `label.pickle` which are used to train, 
+- Before training the model, you should train `soynlp tokenizer` on your training dataset and build vocabulary using following code. 
+- By running following code, you will get `tokenizer.pickle`, `text.pickle` and `label.pickle` which are used to train, 
 test model and predict user's input sentence
 
 ```
@@ -60,7 +61,7 @@ python build_pickle.py
 ```
 
 
-- For training, run `main.py` with train mode (default option)
+- For training, run `main.py` with train mode (which default option)
 
 ```
 python main.py --model MODEL_NAME
@@ -72,8 +73,8 @@ python main.py --model MODEL_NAME
 python main.py --model MODEL_NAME --mode test 
 ```
 
-- For predicting, run `predict.py` with your input sentence. 
-- *Don't forget to wrap your input sentence with double quotation mark !*
+- For predicting, run `predict.py` with your Korean input sentence. 
+- *Don't forget to wrap your input with double quotation mark !*
 
 ```
 python predict.py --model MODEL_NAME --input "YOUR_INPUT"
