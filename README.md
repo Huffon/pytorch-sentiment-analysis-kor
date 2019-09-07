@@ -1,9 +1,9 @@
 ## Sentiment Analysis PyTorch implementations
 This repo contains various basic sequential models used to **analyze sentiment.**
 
-Base codes are based on this great [sentiment-analysis tutorial](https://github.com/bentrevett/pytorch-sentiment-analysis).
+Base codes are based on this great [**sentiment-analysis tutorial**](https://github.com/bentrevett/pytorch-sentiment-analysis).
 
-In this project, I specially used **Korean corpus** [NSMC](https://github.com/e9t/nsmc) (Naver Sentiment Movie Corpus) to apply torchtext into Korean dataset.
+In this project, I specially used **Korean corpus** [**NSMC**](https://github.com/e9t/nsmc) (Naver Sentiment Movie Corpus) to apply torchtext into Korean dataset.
 
 And I also used [**soynlp**](https://github.com/lovit/soynlp) library which is used to tokenize Korean sentence. 
 It is really nice and easy to use, you should try :)
@@ -52,7 +52,7 @@ torchtext==0.4.0
 
 ### Usage
 - Before training the model, you should train soynlp tokenizer and build vocabulary using following code. 
-- By running this code, you will get **tokenizer.pickle**, **text.pickle** and **label.pickle** which are used to train, 
+- By running this code, you will get `tokenizer.pickle`, `text.pickle` and `label.pickle` which are used to train, 
 test model and predict user's input sentence
 
 ```
@@ -60,19 +60,19 @@ python build_pickle.py
 ```
 
 
-- For training, run **main.py** with train mode (default option)
+- For training, run `main.py` with train mode (default option)
 
 ```
 python main.py --model MODEL_NAME
 ```
 
-- For testing, run **main.py** with test mode
+- For testing, run `main.py` with test mode
 
 ```
 python main.py --model MODEL_NAME --mode test 
 ```
 
-- For predicting, run **predict.py** with your input sentence. 
+- For predicting, run `predict.py` with your input sentence. 
 - *Don't forget to wrap your input sentence with double quotation mark !*
 
 ```
