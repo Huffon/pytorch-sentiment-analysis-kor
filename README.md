@@ -18,8 +18,10 @@ It is really nice and easy to use, you should try if you handle Korean sentences
 
 ```
 Example:
-{'text': '['액션', '이', '없는', '데도', '재미', '있는', '몇안되는', '영화'], 
- 'label': 'pos'}
+{
+	'text': '['액션', '이', '없는', '데도', '재미', '있는', '몇안되는', '영화'], 
+ 	'label': 'pos'
+}
 ```
 
 <br/>
