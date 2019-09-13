@@ -12,9 +12,9 @@ class BidirectionalLSTM(nn.Module):
 
         self.lstm = nn.LSTM(config.embed_dim,
                             config.hidden_dim,
-                            config.n_layer,
-                            config.bidirectional,
-                            config.dropout)
+                            num_layers=config.n_layer,
+                            bidirectional=config.bidirectional,
+                            dropout=config.dropout)
 
         # Bidirectional models use concatenated hidden state (forward + backward),
         # therefore input dimension of FC layer has to be multiplied by 2.
