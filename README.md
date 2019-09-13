@@ -79,3 +79,16 @@ python main.py --model MODEL_NAME --mode test
 ```
 python predict.py --model MODEL_NAME --input "YOUR_INPUT"
 ```
+
+<br/>
+
+### Example
+
+```
+[in]  >> 노잼 뻔한 스토리 뻔한 결말...
+[out] >> 0.84 % : Negative
+[in]  >> 마음도 따뜻.마요미의 진가. 그리고 감동. 뭐 힐링타임용으로 무난한 가족영화탄생~^^
+[out] >> 97.64 % : Positive
+[in]  >> 클리쉐 덩어리 예산도 적게들었을듯 한데 마지막 관중조차 CG
+[out] >> 26.68 % : Negative
+```

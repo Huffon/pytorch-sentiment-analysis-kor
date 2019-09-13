@@ -47,7 +47,8 @@ def predict_cnn(config):
         label = 'Negative'
 
     sentiment_percent = prediction.item()
-    print(f'{config.input} is {sentiment_percent * 100:.2f} % : {label}')
+    print(f'[in]  >> {config.input}')
+    print(f'[out] >> {sentiment_percent*100:.2f} % : {label}')
 
 
 def predict_sequential(config):
@@ -88,7 +89,8 @@ def predict_sequential(config):
         label = 'Negative'
 
     sentiment_percent = prediction.item()
-    print(f'{config.input} is {sentiment_percent*100:.2f} % : {label}')
+    print(f'[in]  >> {config.input}')
+    print(f'[out] >> {sentiment_percent*100:.2f} % : {label}')
 
 
 if __name__ == '__main__':
