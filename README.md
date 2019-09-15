@@ -105,4 +105,4 @@ curl -X POST https://us-central1-nlp-api-252209.cloudfunctions.net/sentiment
  -d '{"input":"YOUR INPUT IN KOREAN"}
 ```
 
-<img src='img/curl_ex.png' width=500></img>
+<img src='img/curl_ex.png'></img>
