@@ -19,8 +19,8 @@ It is really nice and easy to use, you should try if you handle Korean sentences
 ```
 Example:
 {
-	'text': '['액션', '이', '없는', '데도', '재미', '있는', '몇안되는', '영화'], 
- 	'label': 'pos'
+  'text': '['액션', '이', '없는', '데도', '재미', '있는', '몇안되는', '영화'], 
+   'label': 'pos'
 }
 ```
 
@@ -96,3 +96,11 @@ python predict.py --model MODEL_NAME --input "YOUR_INPUT"
 [in]  >> 클리쉐 덩어리 예산도 적게들었을듯 한데 마지막 관중조차 CG
 [out] >> 26.68 % : Negative
 ```
+
+- You can test this model using following code
+
+```
+curl -X POST https://us-central1-nlp-api-252209.cloudfunctions.net/sentiment -H 'Content-Type:application/json' -d '{"input":"YOUR INPUT IN KOREAN"}
+```
+
+<img src='img/curl_ex' width=500></img>
