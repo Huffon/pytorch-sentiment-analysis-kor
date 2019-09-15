@@ -97,10 +97,12 @@ python predict.py --model MODEL_NAME --input "YOUR_INPUT"
 [out] >> 26.68 % : Negative
 ```
 
-- You can test this model using following code
+- You can test trained model using following code
 
 ```
-curl -X POST https://us-central1-nlp-api-252209.cloudfunctions.net/sentiment -H 'Content-Type:application/json' -d '{"input":"YOUR INPUT IN KOREAN"}
+curl -X POST https://us-central1-nlp-api-252209.cloudfunctions.net/sentiment 
+ -H 'Content-Type:application/json' 
+ -d '{"input":"YOUR INPUT IN KOREAN"}
 ```
 
-<img src='img/curl_ex' width=500></img>
+<img src='img/curl_ex.png' width=500></img>
