@@ -1,4 +1,6 @@
 import time
+import random
+
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -7,6 +9,10 @@ from utils import epoch_time, binary_accuracy
 from models.vanilla_rnn import RNN
 from models.bidirectional_lstm import BidirectionalLSTM
 from models.cnn import CNN
+
+random.seed(32)
+torch.manual_seed(32)
+torch.backends.cudnn.deterministic = True
 
 
 class Trainer:
@@ -51,10 +57,11 @@ class Trainer:
 
         best_valid_loss = float('inf')
 
-        self.model.train()
         print(self.model)
 
         for epoch in range(self.config.num_epoch):
+        	self.model.train()
+        	
             epoch_loss = 0
             epoch_acc = 0
 
