@@ -38,7 +38,7 @@ numpy==1.16.4
 pandas==0.25.1
 scikit-learn==0.21.3
 soynlp==0.0.493
-torch==1.0.1
+torch==1.2.0
 torchtext==0.4.0
 ```
 

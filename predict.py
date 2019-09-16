@@ -20,7 +20,9 @@ def predict_cnn(config):
     text = pickle.load(pickle_vocab)
 
     model = CNN(config)
+    
     model.load_state_dict(torch.load(config.save_model))
+    model.to(device)
     model.eval()
 
     tokenized = tokenizer.tokenize(config.input)
