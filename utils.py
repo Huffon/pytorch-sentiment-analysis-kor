@@ -175,9 +175,10 @@ def pad_sentence(dataframe, min_len):
 
     for i, row in dataframe.iterrows():
         tokenized = tokenizer.tokenize(row.document)
-        if len(tokenized) < 5:
+        if len(tokenized) < min_len:
             tokenized += ['<pad>'] * (min_len - len(tokenized))
-            dataframe.at[i, 'document'] = tokenized
+            padded_sent = ' '.join(tokenized)
+            dataframe.at[i, 'document'] = padded_sent
 
     return dataframe
 
