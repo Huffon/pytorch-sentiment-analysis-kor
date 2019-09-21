@@ -60,8 +60,8 @@ class Trainer:
         print(self.model)
 
         for epoch in range(self.config.num_epoch):
-        	self.model.train()
-        	
+            self.model.train()
+
             epoch_loss = 0
             epoch_acc = 0
 

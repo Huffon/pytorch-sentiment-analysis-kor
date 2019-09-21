@@ -177,8 +177,8 @@ def pad_sentence(dataframe, min_len):
         tokenized = tokenizer.tokenize(row.document)
         if len(tokenized) < min_len:
             tokenized += ['<pad>'] * (min_len - len(tokenized))
-            padded_sent = ' '.join(tokenized)
-            dataframe.at[i, 'document'] = padded_sent
+        padded_sent = ' '.join(tokenized)
+        dataframe.at[i, 'document'] = padded_sent
 
     return dataframe
 
